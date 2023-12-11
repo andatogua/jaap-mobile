@@ -1,9 +1,10 @@
-import { IonAlert, IonButton, IonCard, IonCardContent, IonCardHeader, IonContent, IonHeader, IonInput, IonItem, IonLabel, IonList, IonPage, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
+import { IonAlert, IonButton, IonCard, IonCardContent, IonCardHeader, IonCardTitle, IonChip, IonCol, IonContent, IonHeader, IonIcon, IonInput, IonItem, IonLabel, IonList, IonPage, IonRow, IonSearchbar, IonTitle, IonToolbar } from '@ionic/react';
 import ExploreContainer from '../components/ExploreContainer';
 import './Tab2.css';
 import { useHistory } from 'react-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { alertCircleOutline } from 'ionicons/icons';
 
 const Tab2: React.FC = () => {
   const history = useHistory()
@@ -72,7 +73,7 @@ const Tab2: React.FC = () => {
     })
       .then(res => {
         console.log(res);
-        
+
         const { status } = res
         if (status === 201) {
           setIserror(true)
@@ -93,20 +94,16 @@ const Tab2: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <IonToolbar>
-          <IonTitle>Nuevo Registro</IonTitle>
-        </IonToolbar>
-      </IonHeader>
+
       <IonContent fullscreen>
-      <IonAlert
-                isOpen={iserror}
-                onDidDismiss={() => setIserror(false)}
-                cssClass="my-custom-class"
-                header={"Atención!"}
-                message={message}
-                buttons={["Dismiss"]}
-            />
+        <IonAlert
+          isOpen={iserror}
+          onDidDismiss={() => setIserror(false)}
+          cssClass="my-custom-class"
+          header={"Atención!"}
+          message={message}
+          buttons={["Dismiss"]}
+        />
         <IonHeader collapse="condense">
           <IonToolbar>
             <IonTitle size="large">Nuevo Registro</IonTitle>
@@ -129,28 +126,53 @@ const Tab2: React.FC = () => {
           </IonList>
         }
         {
-          seleccionado && <IonCard>
+          Object.keys(seleccionado).length > 0 ? <IonCard>
             <IonCardHeader>
-              {seleccionado.primer_nombre}
+              <IonCardTitle>
+                {seleccionado.primer_nombre} {seleccionado.primer_apellido}
+              </IonCardTitle>
             </IonCardHeader>
             <IonCardContent>
-              <p>{seleccionado.localidad}</p>
-              <p>{seleccionado.direccion}</p>
-              <p>{seleccionado.telefono}</p>
+              <IonList>
+                <IonItem>
+                  <IonLabel>Localidad: </IonLabel>{seleccionado.localidad}</IonItem>
+                <IonItem>
+                  <IonLabel>Dirección: </IonLabel>{seleccionado.direccion}</IonItem>
+                <IonItem>
+                  <IonLabel>Teléfono: </IonLabel>{seleccionado.telefono}</IonItem>
+              </IonList>
             </IonCardContent>
-            <div>
-              <IonInput onIonInput={(e: any) => {
-                setForm({
-                  ...form,
-                  lectura_actual: e.detail.value
-                })
-              }}
-                labelPlacement="floating" fill="outline" label="Ingrese valor lectura"></IonInput>
-              <IonButton onClick={() => guardarLectura()}>Guardar</IonButton>
-            </div>
+            <IonRow className='ion-padding-horizontal'>
+              <IonCol>
+                <IonInput onIonInput={(e: any) => {
+                  setForm({
+                    ...form,
+                    lectura_actual: e.detail.value
+                  })
+                }}
+                  labelPlacement="floating" fill="solid" type='number' label="Ingrese valor lectura"></IonInput>
+              </IonCol>
+            </IonRow>
+            <IonRow className='ion-justify-content-center ion-padding-horizontal'>
+              <IonCol>
+                <IonButton expand='block' color={'danger'} fill='outline' onClick={() => setSeleccionado({})}>Cancelar</IonButton>
+              </IonCol>
+              <IonCol>
+                <IonButton expand='block' onClick={() => guardarLectura()}>Guardar</IonButton>
+              </IonCol>
+            </IonRow>
           </IonCard>
+            :
+            <IonRow className='ion-text-center'>
+              <IonCol>
+                <IonChip color="warning">
+                  <IonIcon icon={alertCircleOutline}></IonIcon>
+                  <IonLabel>Debe buscar una cédula válida</IonLabel>
+                </IonChip>
+              </IonCol>
+            </IonRow>
         }
-        
+
       </IonContent>
     </IonPage>
   );
