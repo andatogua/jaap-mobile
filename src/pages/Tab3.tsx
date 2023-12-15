@@ -5,6 +5,7 @@ import { useHistory, RouteComponentProps } from "react-router-dom";
 import { IonGrid, IonRow, IonCol } from '@ionic/react';
 import { IonItem, IonLabel, IonAvatar } from '@ionic/react';
 import { personCircle } from 'ionicons/icons';
+import {urlBase} from "../config/config.json"
 
 const Tab3: React.FC = () => {
   const history = useHistory();
@@ -12,12 +13,12 @@ const Tab3: React.FC = () => {
   useEffect(() => {
     const token = window.localStorage.getItem("token")
     const api = axios.create({
-      baseURL: `https://andruid.pythonanywhere.com/api/autenticacion`,
+      baseURL: urlBase,
       headers: {
         "Authorization": `Token ${token}`
       }
     })
-    api.get("/me/")
+    api.get("api/autenticacion/me/")
       .then(res => {
         console.log(res.data);
 

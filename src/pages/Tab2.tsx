@@ -5,6 +5,8 @@ import { useHistory } from 'react-router';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { alertCircleOutline } from 'ionicons/icons';
+import { urlBase } from "../config/config.json"
+import { Geolocation } from '@ionic-native/geolocation/ngx';
 
 const Tab2: React.FC = () => {
   const history = useHistory()
@@ -20,13 +22,13 @@ const Tab2: React.FC = () => {
     history.replace("/")
   }
   const api = axios.create({
-    baseURL: `https://andruid.pythonanywhere.com/api/`,
+    baseURL: urlBase,
     headers: {
       'Authorization': `Token ${token}`
     }
   })
   const obtenerAbonados = () => {
-    api.get("autenticacion/abonados/")
+    api.get("api/autenticacion/abonados/")
       .then(res => {
         console.log(res.data);
         setAbonados(res.data)
@@ -34,7 +36,7 @@ const Tab2: React.FC = () => {
       .catch(error => {
         console.log(error);
       })
-    api.get("autenticacion/me/")
+    api.get("api/autenticacion/me/")
       .then(res => {
         console.log(res.data);
 
@@ -47,6 +49,24 @@ const Tab2: React.FC = () => {
   useEffect(() => {
     obtenerAbonados()
   }, [])
+
+  const [location, setLocation] = useState({ latitude: 0, longitude: 0 });
+
+  /*useEffect(() => {
+    const getLocation = async () => {
+      try {
+        const response = await Geolocation.getCurrentPosition();
+        const { latitude, longitude } = response.coords;
+        console.log(latitude,longitude);
+        
+        setLocation({ latitude, longitude });
+      } catch (error) {
+        console.error('Error obteniendo la ubicación', error);
+      }
+    };
+
+    getLocation();
+  }, [])*/
 
   const buscarElementos = (texto: String) => {
     const b = abonados.filter((a: any) => (
@@ -66,7 +86,7 @@ const Tab2: React.FC = () => {
   }
 
   const guardarLectura = () => {
-    api.post("lecturas/crear/", {
+    api.post("api/lecturas/crear/", {
       "lectura_actual": form.lectura_actual,
       "abonado": form.abonado,
       "empleado": form.empleado
